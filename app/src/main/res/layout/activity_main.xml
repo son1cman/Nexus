@@ -1,0 +1,216 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/txtUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Cliente(Sugerido por GPS)" />
+
+    <EditText
+        android:id="@+id/txtWebsite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/txtUserName"
+        android:layout_marginTop="10dp"
+        android:inputType="textUri"
+        tools:text="Token" />
+
+    <TextView
+        android:id="@+id/lblInterval"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/txtWebsite"
+        android:layout_marginTop="25dp" />
+
+
+
+        <RelativeLayout
+            android:id="@+id/rel02"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/request_updates_button">
+            android:layout_below="@+id/request_updates_button"
+
+            <RadioButton
+                android:id="@+id/i25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:checked="true"
+
+                android:text="25 lbs x 0  Unids."></RadioButton>
+
+            <RadioButton
+                android:id="@+id/i20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/i25"
+                android:checked="false"
+
+                android:text="20 lbs x 0  Unids."></RadioButton>
+
+            <RadioButton
+                android:id="@+id/i35"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/i25"
+                android:layout_marginLeft="5dp"
+                android:checked="false"
+
+                android:text="35 lbs x 0  Unids."></RadioButton>
+
+            <RadioButton
+                android:id="@+id/i45"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/i20"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/i35"
+                android:checked="false"
+
+                android:text="45 lbs x 0  Unids."></RadioButton>
+
+            <RadioButton
+                android:id="@+id/i100"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/i45"
+                android:layout_marginLeft="5dp"
+                android:checked="false"
+
+                android:text="100 lbs x 0  Unids."></RadioButton>
+
+
+            <RadioButton
+                android:id="@+id/ilts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/i100"
+                android:layout_marginLeft="5dp"
+
+                android:text="Granel x  0  Lts"></RadioButton>
+            <RadioButton
+                android:id="@+id/ikgs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/i100"
+                android:layout_toRightOf="@+id/ilts"
+                android:layout_marginLeft="5dp"
+
+                android:text="Granel x  0  Kgs"></RadioButton>
+
+        </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rel03"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/rel02"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:id="@+id/btn_substract"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="-"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/location_updates_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/btn_substract"
+            android:text="Desglose de factura (Descuento, contado o credito )" />
+
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/btn_substract"
+            android:layout_alignBottom="@+id/btn_substract"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="+" />
+
+
+    </RelativeLayout>
+
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/send"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:height="50dip"
+            android:text="IMPRIMIR" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/request_updates_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/txtWebsite"
+        android:onClick="requestLocationUpdates"
+        android:text="+" />
+
+    <Button
+        android:id="@+id/remove_updates_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="removeLocationUpdates"
+        android:text="Token"
+        android:layout_below="@+id/txtWebsite"
+        android:layout_centerHorizontal="true" />
+
+
+
+    <Button
+        android:id="@+id/btnsync"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="requestWebService"
+        android:text="Sync"
+        android:layout_below="@+id/txtWebsite"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>
