@@ -141,12 +141,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     String _Quantities;
     int _facnum = 10001;
     String _credit = "c";
+    String _desc = "y";
 
     int Q20,Q25,Q35,Q45,Q100,Qlts,Qkgs;
     double _precioCilindro20 = 4000;
     double _precioCilindro25 = 5799;
     double _precioCilindro35 = 6000;
     double _precioCilindro45 = 13000;
+    double _descCilindro25 = 240;
+    double _descCilindro100 = 960;
     double _precioCilindro100 = _precioCilindro25 * 4;
     double _precioLts = 221.4;
     double _precioKgs = _precioLts * 11.67;
@@ -412,6 +415,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         }catch(Exception e){
             sendButton.setText(e.getMessage());
+            //sendButton.setText("Imprimir");
             e.printStackTrace();
         }
     }
@@ -428,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             beginListenForData();
 
-             sendButton.setText("BT Opened");
+             sendButton.setText("Imprimir");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -511,7 +515,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private String _SelectedOptionStr = "";
     private int _SelectedOption = 0;
 
-    String fac_detail;
+    String fac_detail,desc_detail;
     boolean _facok = true;
     // this will send text data to be printed by the bluetooth printer
     void sendData() throws IOException {
@@ -521,10 +525,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         int Result_25 = (Integer.parseInt(mTextView.getText().toString()) * 5799);
         int Result_lts = (Integer.parseInt(mTextView.getText().toString()) * 222);
         */
-        float _f = (float)(Q25 * _precioCilindro25);float _f0 = (float)(Q20 * _precioCilindro20);float _f2 = (float)(Q35 * _precioCilindro35);
+        float _fd25 = (float)(Q25 * _descCilindro25);
+        float _fd100 = (float)(Q100 * _descCilindro100);
+        float _f =  (float)(Q25 * _precioCilindro25);float _f0 = (float)(Q20 * _precioCilindro20);float _f2 = (float)(Q35 * _precioCilindro35);
         float _f3 = (float)(Q45 * _precioCilindro45);float _f4 = (float)(Q100 * _precioCilindro100);float _f5 = (float)(Qlts * _precioLts);
         float _f6 = (float)(Qkgs * _precioKgs);
         fac_detail = "";
+        desc_detail = "";
         _Quantities = String.valueOf(Q20)+","+String.valueOf(Q25)+","+String.valueOf(Q35)+","+String.valueOf(Q45)+","+String.valueOf(Q100)+","+String.valueOf(Qlts)+","+String.valueOf(Qkgs);
         _totalfac = _f+_f0+_f2+_f3+_f4+_f5+_f6;
 
@@ -536,6 +543,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (Q25 > 0){
             fac_detail += "    "+String.valueOf(Q25)+ "    "+ String.valueOf(_precioCilindro25)  +"       Cilndro 25   "+  String.format("%.2f", _f);
             fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q25)+ "    "+ String.valueOf(_descCilindro25)  +"       25 Lbs   "+  String.format("%.2f", _fd25);
+                desc_detail += "\n";
+            }
         }
         if (Q35 > 0){
             fac_detail += "    "+String.valueOf(Q35)+ "    "+ String.valueOf(_precioCilindro35)  +"       Cilndro 35   "+ String.format("%.2f", _f2);
@@ -548,6 +559,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (Q100 > 0){
             fac_detail += "    "+String.valueOf(Q100)+ "    "+ String.valueOf(_precioCilindro100)  +"       Cilndro 100   "+ String.format("%.2f", _f4);
             fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q100)+ "    "+ String.valueOf(_descCilindro100)  +"      100 Lbs   "+  String.format("%.2f", _fd25);
+                desc_detail += "\n";
+            }
         }
         if (Qlts > 0){
             fac_detail += "    "+String.valueOf(Qlts)+ "  "+ String.format("%.2f", _precioLts)  +"     Granel Lts   "+ String.format("%.2f", _f5
@@ -606,7 +621,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             else
                 msg += "     "+ mTextView.getText().toString()  +"                 GLP lts          "+ String.valueOf(Result_lts) +"    ";
 */
-            if(fac_detail != "")
+            if(fac_detail != "" )
                 msg += fac_detail;
             //msg += "\n";
             //msg += "     275                Granel GLP      61050   ";
@@ -616,11 +631,65 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             msg += "    TOTAL(CRC):               "+String.format("%.2f", _totalfac)+"   ";
 
             msg += "\n";
-            msg += "\n";
+
+            msg += "     Sello de garantia en www.tomza.co.cr    ";
             msg += "     AUTORIZADO MEDIANTE EL OFICIO NUMERO    ";
             msg += "\n";
             msg += "    03-0001-2003 del 6 de feb de D.G.T.D   ";
             msg += "\n";
+
+            if(_credit == "c" || _desc == "y"){
+                msg += "\n";
+                msg += "\n";
+                msg += "\n";
+                msg += "           Gas Tomza de Costa Rica S.A.         ";
+                msg += "\n";
+                msg += "              Ced. Jur. 3-101-349880            ";
+                msg += "\n";
+                msg += "          La lima de Cartago, Costa Rica        ";
+                msg += "\n";
+                msg += "              Telefono:(506)2201-6000           ";
+                msg += "\n";
+                msg += "                www.gastomza.co.cr            ";
+                msg += "\n";
+                msg += "            servicioalcliente.cr@tomza.com      ";
+                msg += "\n";
+                msg += "                   NOTA DE CREDITO              ";
+                msg += "\n";
+                msg += "   Fecha:"+_date.toString();
+                msg += "\n";
+                msg += "   Codigo de cliente: C8907";
+                msg += "\n";
+                msg += "   Cliente: " + _client.toString();
+                msg += "\n";
+                msg += "   Asignado a factura No: " + String.valueOf(_facnum);
+                msg += "\n";
+                msg += "   CANT.  DESC.    PRODUCTO    TOTAL    ";
+                msg += "\n";
+                msg += "   -------------------------------------------- ";
+                msg += desc_detail;
+                msg += "\n";
+                msg += "    CREDITO(CRC):             "+String.format("%.2f", _fd25+_fd100)+"   ";
+                msg += "\n";
+                msg += "    TOTAL A PAGAR(CRC):       "+String.format("%.2f",_totalfac - (_fd25+_fd100))+"   ";
+                msg += "\n";
+                msg += "\n";
+                msg += "\n";
+                msg += "\n";
+                msg += "\n";
+                msg += "\n";
+                msg += "\n";
+                msg += "       Firma:_______________________    ";
+                msg += "\n";
+
+
+
+
+            }//end is _credit
+
+
+
+
 
 
             mmOutputStream.write(msg.getBytes());

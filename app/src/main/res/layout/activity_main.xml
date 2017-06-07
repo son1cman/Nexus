@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Cliente(Sugerido por GPS)" />
+        android:text="Super El Mas Barato" />
 
     <EditText
         android:id="@+id/txtWebsite"
@@ -28,7 +28,7 @@
         android:layout_below="@+id/txtUserName"
         android:layout_marginTop="10dp"
         android:inputType="textUri"
-        tools:text="Token" />
+        tools:text="Cantidad" />
 
     <TextView
         android:id="@+id/lblInterval"
