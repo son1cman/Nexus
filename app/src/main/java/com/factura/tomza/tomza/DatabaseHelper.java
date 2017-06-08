@@ -12,7 +12,42 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Constants for Database name, table name, and column names
-    public static final String DB_NAME = "NamesDB";
+    public static final String DB_CLIENTES = "CLIENTESDB";
+    public static final String DB_FACTURA = "FACTURADB";
+    public static final String DB_GENERAL = "GENERALDB";
+    public static final String CLIENTES_ID = "id";
+    public static final String CLIENTES_RUTA = "id";
+    public static final String CLIENTES_CODIGO = "id";
+    public static final String CLIENTES_NOMBRE = "id";
+    public static final String CLIENTES_RAZONSOCIAL = "id";
+    public static final String CLIENTES_TIPODEDOCUMENTO = "id";
+    public static final String CLIENTES_DOCUMENTO = "id";
+    public static final String CLIENTES_CEDI = "id";
+    public static final String CLIENTES_DIRECCION = "id";
+    public static final String CLIENTES_TELEFONOFIJO = "id";
+    public static final String CLIENTES_TELEFONOCELULAR = "id";
+    public static final String CLIENTES_L = "id";
+    public static final String CLIENTES_K = "id";
+    public static final String CLIENTES_M = "id";
+    public static final String CLIENTES_J = "id";
+    public static final String CLIENTES_V = "id";
+    public static final String CLIENTES_S = "id";
+    public static final String CLIENTES_FRECUENCIA = "i";
+    public static final String CLIENTES_ORDEN = "";
+    public static final String CLIENTES_DESCUENTO = "";
+    public static final String CLIENTES_CREDITO = "";
+    public static final String CLIENTES_PUEDOFACTURAR = "";
+    public static final String CLIENTES_FORMADEPAGO = "";
+    public static final String CLIENTES_PLAZO = "";
+    public static final String CLIENTES_COORDENADASLONG = "";
+    public static final String CLIENTES_COORDENADASLAT = "";
+    public static final String GENERAL_PRECIO = "";
+    public static final String GENERAL_RUTA = "";
+    public static final String GENERAL_CANAL = "";
+    public static final String GENERAL_SUBCANAL = "";
+
+    
+
     public static final String TABLE_NAME = "names";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_NAME = "name";
@@ -23,7 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Constructor
     public DatabaseHelper(Context context) {
-        super(context, DB_NAME, null, DB_VERSION);
+        super(context, DB_CLIENTES, null, DB_VERSION);
     }
 
     //creating the database
