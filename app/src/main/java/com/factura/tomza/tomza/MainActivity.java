@@ -69,6 +69,14 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
+    /******* Temporary Database *********/
+    String[] _razonDB = {"PULPERIA CARACOL","PULPERIA KIKE","SUPER SANTA TERE","SUPER LA FAMILIA","PULPERIA LIMONCITO","PULPERIA LOS GEMELOS","PULPERIA DIVINO NIÑO","PULPERIA EL PERLA","PULPERIA CHIQUITITA","PULPERIA PAPILLOS","LACTEOS DE ORIENTE","PULPERIA EL BUITRE","DISTRIBUIDORA L Y M","PANADERIA LA TRINIDADA","SUPER LA SUIZA","VERDULERIA M. JOSE","CANASTA LA SUIZA","FERRETERIA VELCA","PULPERIA EL CIPRES","PULPEERIA EL HIGUERON","PULPERIA LA MIGUELEÑA","SUPER LA CENTRAL","SUPER LAS ORQUIDEAS","PULPERIA GAUDY","PULPERIA SAN CRISTOBAL","PULPERIA AGUILA REAL","VALLE GRANO DE ORO","PULPERIA BEBATA","SAN MARTIN","SUPER LA PLAZA","FERRETERIA ANGEL","PULPERIA ADONAY","KEVIN VARGAS","PULPERIA SITIO MATA","SUPER BARATO","SUPER LA AMISTAD","MINI SUPER SALAS","DISTRIBUIDOR A Y D","SUPER AQUIARES","ESTER SOJO","CARNICERIA LA FAVORITA","DISTRIBUIDORA L Y M","PULPERIA BENDICION DE DIOS","WORK ROL","PULPERIA EL JIRON","PULPERIA SAN MARTIN","PANADERIA EL CANTANO","CANASTA JUAN VIÑAS","SUPER JUAN VIÑAS","ABASTECEDOR TIERRA POETA","SUPER LUCRECIA","FERRETERIA CHINCHILLA","SUPER TUIZ","PULPERIA EL PUEBLO","PULPERIA PERALTA","AGRO DEL NORTE","SUPER CANADA","SUPER PAGUE MENOS","COMERCIALIZADORA BELCA","SUPER SAIMERSON","SUPER JABILLOS","MARIA JOSE","SUPER SANTA CRUZ","PULPERIA RAYO AZUL","PULPERIA LA CASITA","MINI SUPER MARIA","SANTA LUCIA"};
+    String[] _direccionDB = {"GRANO DE ORO 600NORTE DE LA PLAZA","75 ESTE DEL TRANSITO DE TURRIALBA","FRENTE AL PARQUE","CARRETERA HACIA PERALTA","DE LA ESCUELA DE CALLE DEL CAS 300 ESTE","DE LA ESCUELA DEL CAS 700 OESTE","600 ESTE DE LA ESCUELA EL CAS","BARRIOS LOS SAUSES","BARRIO LOS SAUCES","BARRIO LOS SAUCES","BARRIO EL ORIENTE SANTA ROSA","BARRIO EL ORIENTE SANTA ROSA","PEJIBALLE 300 SUROESTE DE LA ESCUELA","DIAGONAL AL PARQUE LA SUIZA","DE LA RURAL50 OESTE","CENTRO LA SUIZ","FRENTE AL BANCO NACIONEAL DE SUIZA","FRENTE A PLAZA DE DEPORTES DE LA SUIZA","FRENTE A PLAZA LAS COLONIAS","BARRIO 100 MANZANAS 200 SUR DE LA ESCUELA","BARRIO 100 MANZANAS 800 NORTE DE LA ESCULA","FRENTE AL CENTRO EDUCATIVO TAYUDIC","DE LA ESCULA DE TAYITIC 2 KM SUR","DE LA ESCUELA 75 NORTE","BAJOS DE PACUARE FRENTE A IGLESIA","BAJOS DE PACUARE SOBRE CARRETERA","GRANO DE ORO CENTRO","GRANO DE ORO QUETZAL ESCUELA 250SUR","GRANO DE ORO 300 ESTE","FRENTE A PLAZA DE DEPORTES DE GRANO DE ORO","DE LA CONCHA DEPORTIVA 50 ESTE GRANO DE ORO","GRANO DE ORO 200 NORTE","TERMINAL DE TRANSTUSA","DE LA ESCUELA DE SITIO MATA 300 ESTE","500 OESTE DE LA ESCUELA","CENTRO DE LLANOS PAVONES","100 SUR DE LA ESCUELA DE JOBILLOS","TURRIALBA CENTRO","DEL PARQUE DE AQUIARES 50 NORTE","DE COOPEANDE 50 NORTE","PEJIBALLE EL HUMO CENTRO","DE LA IGLESIA PEJIBAYE 400 SUR","PEJIBALLE ATIRRO 700 OESTE","DEL PARQUE DE TURRIALNA 200 NORTE","SANTA ELENA 50 NORTE DE FOTOS MARTINEZ","JUAN VILLAS 400 NORTE DE LA ESCUELA","JUAN VIÑAS LOS ALPES ESCUELA 100 ESTE","JUAN VIÑAS 50 OESTE","JUAN VIÑAS DE LA IGLESIA 50 NORTE","FRENTE A LA ESCUELA DE GUAYABO","SANTA CRUZ CENTRO","DEL CENTRO DE SANTA CRUZ KM AL NORTE","DIAGONAL A LA IGLESIA DEL TUIS","CANADA LASUIZA DE LA ESCUELA 50M OESTE","PERALTA CENTRO DE LA ESCUELA 25 ESTE","CAPELLADES DIAGONAL A LA IGLESIA","BARRIO CANADA 150 OESTE DE ESCUELA","DE LA ESCUELA DE LA LIRA 400 NORTE","CENTRO DE TURRIALBA DIAGONAL A LA PLAZA","TURIALBA CENTRO","DE LA ESCULEA DE PAVONES 300 NORTE","300 NORTE DE LA CRUZ ROJA LA SUIZA","SANTA CRUZ CENNTRO DE LA IGLESIA 200 NORTE","DEL MONUMENTO GUAYABO 5 KM NORTE","300 NORESTE DE LA IGLESIA DEL CARMEN DE SANTA CRUZ","DEL BAR ARC NOE 800 MT MANO DERACHA","DEL BAR ARC NOE 800 MT MANO DERACHA"};
+    String[] _telefonoDB = {"8337-3517","2556-6621","2559-1020","8635-5975","8346,7764","8350-8612","2285-1700","8659-0449","2245-1709","2245-1861","2529-2047","2578-0187","8989-7322","2531-1281","2531-1919","8745-3214","2531-1084","6138-6734","8841-4225","7102-3673","8357-2837","8846-3392","","2554-8345","","","","8472-0883","2532-2083","","","","8950-3754","2539-1670","2538-1122","8648-7436","2538-1514","2556-1834","2556-2298","8790-7444","2531-3102","2272-9150","2272-2313","2274-4747","8753-7194","","2532-1020","2532-2010","8767-1688","2221-2733","6103-1234","8320-7649","2292-4583","2531-1101","2559-0915","","2531-1530","2577-1940","2574-2630","2577-1034","2538-1005","8488-6045","","7156-2072","8770-8047","8971-2653",""};
+    Integer[] _descuentoDB = {0,425,425,0,0,0,0,0,0,0,0,0,240,0,649,0,240,200,649,0,0,649,0,0,0,0,0,0,0,0,0,0,649,0,649,649,200,300,649,-1,240,240,0,300,0,0,0,240,649,425,0,200,0,200,0,0,425,649,200,425,300,649,240,0,0,240,240};
+    Integer[] _creditDB = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
+
 
     /********************************************************************************************/
     //Bluetooth variables
@@ -77,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     Button sendButton;
     // will enable user to enter any text to be printed
     EditText myTextbox;
+    EditText myUserName;
     // android built in classes for bluetooth operations
     BluetoothAdapter mBluetoothAdapter;
     BluetoothSocket mmSocket;
@@ -85,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     OutputStream mmOutputStream;
     InputStream mmInputStream;
     Thread workerThread;
+
+
 
     byte[] readBuffer;
     int readBufferPosition;
@@ -133,8 +144,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      */
     RadioButton m_i20, m_i25, m_i35,m_i45,m_i100,m_lts,m_kgs;
     Button m_add,m_substract;
+    String _codigocliente = "0";
     String _client = "Libreria Hellen";
-    String _ruta = "60";
+    String _ruta = "1";
     String _coords = "9.872890,-83.944350";
     String _date;
     double _totalfac = 0;
@@ -209,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             }
         });
-
+    myUserName = (EditText)findViewById(R.id.txtUserName);
         m_substract.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 switch (_SelectedOption ){
@@ -525,6 +537,44 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         int Result_25 = (Integer.parseInt(mTextView.getText().toString()) * 5799);
         int Result_lts = (Integer.parseInt(mTextView.getText().toString()) * 222);
         */
+
+        int codigocliente = Integer.parseInt(myUserName.getText().toString());
+         _codigocliente = myUserName.getText().toString();
+        _client = _razonDB[codigocliente];
+        if(_descuentoDB[codigocliente] != 0){
+            _desc = "y";
+            if(_descuentoDB[codigocliente] == -1) {
+                if((Q25 + (Q100 * 4)) < 10)
+                    _descCilindro25 = 1975;
+                if((Q25 + (Q100 * 4)) > 9 && (Q25 + (Q100 * 4)) < 21)
+                    _descCilindro25 = 1754;
+                if((Q25 + (Q100 * 4)) > 19 && (Q25 + (Q100 * 4)) < 31)
+                    _descCilindro25 = 1858;
+                if((Q25 + (Q100 * 4)) >= 30 && (Q25 + (Q100 * 4)) < 41)
+                    _descCilindro25 = 1898;
+                if((Q25 + (Q100 * 4)) >= 40 && (Q25 + (Q100 * 4)) < 51)
+                    _descCilindro25 = 1908;
+                if((Q25 + (Q100 * 4)) >= 50 && (Q25 + (Q100 * 4)) < 61)
+                    _descCilindro25 = 1923;
+                if((Q25 + (Q100 * 4)) >= 60)
+                    _descCilindro25 = 1933;
+
+            }else {
+
+                _descCilindro25 = Integer.parseInt(_descuentoDB[codigocliente].toString());
+                _descCilindro100 = _descCilindro100 * 4;
+            }
+        }else{
+            _desc = "n";
+        }
+        if(_creditDB[codigocliente] != 0){
+            _credit = "y";
+        }else{
+            _credit = "n";
+        }
+
+
+
         float _fd25 = (float)(Q25 * _descCilindro25);
         float _fd100 = (float)(Q100 * _descCilindro100);
         float _f =  (float)(Q25 * _precioCilindro25);float _f0 = (float)(Q20 * _precioCilindro20);float _f2 = (float)(Q35 * _precioCilindro35);
@@ -600,16 +650,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             msg += "\n";
             msg += "   Fecha:"+_date;
             msg += "\n";
-            if(_credit == "c")
-                msg += "   CONTADO ";
-            else
+            if(_credit == "y")
                 msg += "   CREDITO ";
+            else
+                msg += "   CONTADO ";
             msg += "\n";
             msg += "   Razon Social:"+ _client;
             msg += "\n";
-            msg += "   Direccion:  6 CALLE ORIENTE, CARTAGO         ";
+            msg += "   Direccion:  " + _direccionDB[codigocliente];
             msg += "\n";
-            msg += "   Telefono:  2605-6879  Codigo Cliente: C0125  ";
+            msg += "   Telefono:" +_telefonoDB[codigocliente] + "Codigo Cliente:" +  _codigocliente;
             msg += "\n";
             msg += "\n";
             msg += "   CANT.  P.UNITARIO    PRODUCTO    TOTAL    ";
@@ -638,7 +688,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             msg += "    03-0001-2003 del 6 de feb de D.G.T.D   ";
             msg += "\n";
 
-            if(_credit == "c" || _desc == "y"){
+            if(_desc == "y"){//if(_credit == "y" || _desc == "y"){
                 msg += "\n";
                 msg += "\n";
                 msg += "\n";
@@ -654,11 +704,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 msg += "\n";
                 msg += "            servicioalcliente.cr@tomza.com      ";
                 msg += "\n";
-                msg += "                   NOTA DE CREDITO              ";
+                msg += "                    DESCUENTO                   ";
                 msg += "\n";
                 msg += "   Fecha:"+_date.toString();
                 msg += "\n";
-                msg += "   Codigo de cliente: C8907";
+                msg += "   Codigo de cliente:"+  _codigocliente;
                 msg += "\n";
                 msg += "   Cliente: " + _client.toString();
                 msg += "\n";
@@ -669,7 +719,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 msg += "   -------------------------------------------- ";
                 msg += desc_detail;
                 msg += "\n";
-                msg += "    CREDITO(CRC):             "+String.format("%.2f", _fd25+_fd100)+"   ";
+                msg += "    DESCUENTO(CRC):           "+String.format("%.2f", _fd25+_fd100)+"   ";
                 msg += "\n";
                 msg += "    TOTAL A PAGAR(CRC):       "+String.format("%.2f",_totalfac - (_fd25+_fd100))+"   ";
                 msg += "\n";
