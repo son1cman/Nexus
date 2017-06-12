@@ -13,34 +13,62 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Constants for Database name, table name, and column names
     public static final String DB_CLIENTES = "CLIENTESDB";
-    public static final String DB_FACTURA = "FACTURADB";
+    public static final String DB_FACTURATOMZA = "FACTURATOMZADB";
+    public static final String DB_FACTURACILZA = "FACTURACILZADB";
     public static final String DB_GENERAL = "GENERALDB";
     public static final String CLIENTES_ID = "id";
-    public static final String CLIENTES_RUTA = "id";
-    public static final String CLIENTES_CODIGO = "id";
-    public static final String CLIENTES_NOMBRE = "id";
-    public static final String CLIENTES_RAZONSOCIAL = "id";
-    public static final String CLIENTES_TIPODEDOCUMENTO = "id";
-    public static final String CLIENTES_DOCUMENTO = "id";
-    public static final String CLIENTES_CEDI = "id";
-    public static final String CLIENTES_DIRECCION = "id";
-    public static final String CLIENTES_TELEFONOFIJO = "id";
-    public static final String CLIENTES_TELEFONOCELULAR = "id";
-    public static final String CLIENTES_L = "id";
-    public static final String CLIENTES_K = "id";
-    public static final String CLIENTES_M = "id";
-    public static final String CLIENTES_J = "id";
-    public static final String CLIENTES_V = "id";
-    public static final String CLIENTES_S = "id";
-    public static final String CLIENTES_FRECUENCIA = "i";
-    public static final String CLIENTES_ORDEN = "";
-    public static final String CLIENTES_DESCUENTO = "";
-    public static final String CLIENTES_CREDITO = "";
-    public static final String CLIENTES_PUEDOFACTURAR = "";
-    public static final String CLIENTES_FORMADEPAGO = "";
-    public static final String CLIENTES_PLAZO = "";
-    public static final String CLIENTES_COORDENADASLONG = "";
-    public static final String CLIENTES_COORDENADASLAT = "";
+    public static final String CLIENTES_FECHACREACION = "fechacreacion";
+    public static final String CLIENTES_RUTA = "ruta";
+    public static final String CLIENTES_CODIGO = "codigo";
+    public static final String CLIENTES_NOMBRE = "nombre";
+    public static final String CLIENTES_RAZONSOCIAL = "razonsocial";
+    public static final String CLIENTES_TIPODEDOCUMENTO = "tipodedocumento";
+    public static final String CLIENTES_DOCUMENTO = "documento";
+    public static final String CLIENTES_CEDI = "cedi";
+    public static final String CLIENTES_DIRECCION = "direccion";
+    public static final String CLIENTES_TELEFONOFIJO = "telefonofijo";
+    public static final String CLIENTES_TELEFONOCELULAR = "relefonocelular";
+    public static final String CLIENTES_L = "l";
+    public static final String CLIENTES_K = "k";
+    public static final String CLIENTES_M = "m";
+    public static final String CLIENTES_J = "j";
+    public static final String CLIENTES_V = "v";
+    public static final String CLIENTES_S = "s";
+    public static final String CLIENTES_FRECUENCIA = "frecuencia";
+    public static final String CLIENTES_ORDEN = "orden";
+    public static final String CLIENTES_DESCUENTO = "descuento";
+    public static final String CLIENTES_CREDITO = "credito";
+    public static final String CLIENTES_PUEDOFACTURAR = "puedofacturar";
+    public static final String CLIENTES_FORMADEPAGO = "formadepago";
+    public static final String CLIENTES_PLAZO = "plazo";
+    public static final String CLIENTES_COORDENADASLONG = "coordenadaslong";
+    public static final String CLIENTES_COORDENADASLAT = "coordenadaslat";
+
+    public static final String FACTURATOMZA_ID = "";
+    public static final String FACTURATOMZA_FACNUM = "";
+    public static final String FACTURATOMZA_CODIGOCLIENTE = "";
+    public static final String FACTURATOMZA_Q20 = "";
+    public static final String FACTURATOMZA_Q25 = "";
+    public static final String FACTURATOMZA_Q35 = "";
+    public static final String FACTURATOMZA_Q45 = "";
+    public static final String FACTURATOMZA_Q100 = "";
+    public static final String FACTURATOMZA_QLTS = "";
+    public static final String FACTURATOMZA_QKGS = "";
+    public static final String FACTURATOMZA_FECHA = "";
+
+    public static final String FACTURACILZA_ID = "";
+    public static final String FACTURACILZA_FACNUM = "";
+    public static final String FACTURACILZA_CODIGOCLIENTE = "";
+    public static final String FACTURACILZA_Q20 = "";
+    public static final String FACTURACILZA_Q25 = "";
+    public static final String FACTURACILZA_Q35 = "";
+    public static final String FACTURACILZA_Q45 = "";
+    public static final String FACTURACILZA_Q100 = "";
+    public static final String FACTURACILZA_FECHA = "";
+
+    public static final String GENERAL_ID = "";
+    public static final String GENERAL_FECHA = "";
+    public static final String GENERAL_LASTFACNUM = "";
     public static final String GENERAL_PRECIO = "";
     public static final String GENERAL_RUTA = "";
     public static final String GENERAL_CANAL = "";
@@ -64,12 +92,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //creating the database
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE " + TABLE_NAME
-                + "(" + COLUMN_ID +
-                " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NAME +
-                " VARCHAR, " + COLUMN_STATUS +
-                " TINYINT);";
+        String sql = "CREATE TABLE " + DB_CLIENTES
+                + "(" + CLIENTES_ID +
+                " INTEGER PRIMARY KEY AUTOINCREMENT, " + CLIENTES_RUTA +
+                " VARCHAR, " + CLIENTES_CODIGO + " INTEGER, " +
+                 CLIENTES_FECHACREACION + " TEXT, " +
+                                 CLIENTES_CEDI +
+                " VARCHAR, " + CLIENTES_NOMBRE +
+                " VARCHAR, " + CLIENTES_RAZONSOCIAL +
+                " VARCHAR, "+ CLIENTES_TIPODEDOCUMENTO +
+                " VARCHAR, " + CLIENTES_DOCUMENTO +
+                " VARCHAR, " + CLIENTES_DIRECCION +
+                " VARCHAR, " + CLIENTES_TELEFONOFIJO +
+                " VARCHAR, " + CLIENTES_TELEFONOCELULAR+
+                " TINYINT, " +  CLIENTES_L +
+                " TINYINT, " + CLIENTES_K +
+                " TINYINT, " + CLIENTES_M +
+                " TINYINT, " + CLIENTES_J +
+                " TINYINT, " + CLIENTES_V +
+                " TINYINT, " + CLIENTES_S +
+                " VARCHAR, " + CLIENTES_FRECUENCIA +
+                " VARCHAR, " + CLIENTES_ORDEN +
+                " INTEGER, " + CLIENTES_DESCUENTO +
+                " TINYINT, " + CLIENTES_CREDITO +
+                " TINYINT, " + CLIENTES_PUEDOFACTURAR +
+                " TINYINT, " + CLIENTES_FORMADEPAGO +
+                " INTEGER, " + CLIENTES_PLAZO +
+                " VARCHAR, " + CLIENTES_COORDENADASLONG +
+                " VARCHAR, " + CLIENTES_COORDENADASLAT +" VARCHAR);";
         db.execSQL(sql);
+
+         sql = "CREATE TABLE " + DB_FACTURATOMZA
+                + "(" + FACTURATOMZA_ID +
+                " INTEGER PRIMARY KEY AUTOINCREMENT, " + FACTURATOMZA_CODIGOCLIENTE +
+                " VARCHAR, " + FACTURATOMZA_FACNUM +
+                " INTEGER, "+ FACTURATOMZA_FECHA +
+                " TEXT, " + FACTURATOMZA_Q20 +
+                " TINYINT, " + FACTURATOMZA_Q25 +
+                " TINYINT, " + FACTURATOMZA_Q35 +
+                " TINYINT, " + FACTURATOMZA_Q45 +
+                " TINYINT, " + FACTURATOMZA_Q100 +
+                " TINYINT, " + FACTURATOMZA_QLTS +
+                 " INTEGER, " + FACTURATOMZA_QKGS +
+                " INTEGER);";
+        db.execSQL(sql);
+
     }
 
     //upgrading the database

@@ -46,6 +46,12 @@ import android.content.BroadcastReceiver;
 import android.widget.Toast;
 import android.content.IntentFilter;
 import android.content.Context;
+
+import android.view.inputmethod.EditorInfo;
+import android.view.View.OnKeyListener;
+import android.view.View;
+import android.view.KeyEvent;
+
 import 	android.app.Activity;
 
 import java.io.IOException;
@@ -138,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Button mRemoveUpdatesButton;
     private Button mRequestButton;
     private TextView mLocationUpdatesResultView;
-    private TextView mTextView;
+    private EditText mTextView;
     /*********************************************************
      * Facturacion
      */
@@ -182,6 +188,51 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         m_lts = (RadioButton) findViewById(R.id.ilts);m_kgs = (RadioButton) findViewById(R.id.ikgs);
 
         m_add = (Button) findViewById(R.id.btn_add); m_substract = (Button) findViewById(R.id.btn_substract);
+        mTextView = (EditText) findViewById(R.id.txtWebsite);
+        mTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) { //IME_ACTION_DONE para cerrar editor
+                    m_i25.setText("25 lbs x "+mTextView.getText().toString()+"  Unids.");
+                    switch (_SelectedOption ){
+                        case 0:
+                            Q25 = Integer.valueOf(mTextView.getText().toString());
+                            m_i25.setText("25 lbs x "+mTextView.getText().toString()+"  Unids.");
+                            break;
+                        case 1:
+                            Q20= Integer.valueOf(mTextView.getText().toString());
+                            m_i20.setText("20 lbs x "+mTextView.getText().toString()+"  Unids.");
+                            break;
+
+                        case 2:
+                            Q35= Integer.valueOf(mTextView.getText().toString());++;
+                            m_i35.setText("35 lbs x "+mTextView.getText().toString()+"  Unids.");
+                            break;
+                        case 3:
+                            Q45= Integer.valueOf(mTextView.getText().toString());++;
+                            m_i45.setText("45 lbs x "+mTextView.getText().toString()+"  Unids.");
+                            break;
+                        case 4:
+                            Q100= Integer.valueOf(mTextView.getText().toString());++;
+                            m_i100.setText("100 lbs x "+mTextView.getText().toString()+"  Unids.");
+                            break;
+                        case 5:
+                            Qlts= Integer.valueOf(mTextView.getText().toString());++;
+                            m_lts.setText("Granel lts x "+mTextView.getText().toString());
+                            break;
+                        case 6:
+                            Qkgs= Integer.valueOf(mTextView.getText().toString());++;
+                            m_kgs.setText("Granel kgs x "+mTextView.getText().toString());
+                            break;
+                        default:
+                            break;
+                    }
+                    //progressButton.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         m_add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -221,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             }
         });
-    myUserName = (EditText)findViewById(R.id.txtUserName);
+    myUserName = (EditText)findViewById(R.id.txtUserName); //Boton menos
         m_substract.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 switch (_SelectedOption ){
@@ -768,6 +819,318 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             e.printStackTrace();
         }
     }
+    private void recieveSMS(String smsCode){
+        //cODIGO de la central que solicita
+        switch (smsCode){
+
+            case "A0": //Solicitar facturas
+                break;
+            case "A1": //Solicitar GPS_S
+                break;
+
+
+
+            default:
+                break;
+        }
+
+    }
+    private void UploadFactura(String CodeFAC,String ClientCode,String Quantities,String Hora){
+        String phoneNumber = "60159990";
+        String smsBody = "21,"+CodeFAC+","+ClientCode+","+Quantities+","+Hora;
+
+
+        String SMS_SENT = "SMS_SENT";
+        String SMS_DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(SMS_SENT), 0);
+        PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(SMS_DELIVERED), 0);
+
+
+
+// For when the SMS has been sent
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(context, "SMS sent successfully", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(context, "Generic failure cause", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(context, "Service is currently unavailable", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(context, "No pdu provided", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(context, "Radio was explicitly turned off", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SMS_SENT));
+
+// For when the SMS has been delivered
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "Enviado a tomza.co.cr", Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getBaseContext(), "Reintentando...", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SMS_DELIVERED));
+
+// Get the default instance of SmsManager
+        SmsManager smsManager = SmsManager.getDefault();
+// Send a text based SMS
+        smsManager.sendTextMessage(phoneNumber, null, smsBody, sentPendingIntent, deliveredPendingIntent);
+
+
+        /****************************************************************/
+
+
+
+    }
+    private void UploadFacturas(String[] CodeFAC,String[] ClientCode,String[] Quantities,String[] Hora){
+        String phoneNumber = "60159990";
+        String smsBody = "21,"+CodeFAC[0]+","+ClientCode[0]+","+Quantities[0]+","+Hora[0]
+                        +","+CodeFAC[1]+","+ClientCode[1]+","+Quantities[1]+","+Hora[1]
+                        +","+CodeFAC[2]+","+ClientCode[2]+","+Quantities[2]+","+Hora[2]
+                        +","+CodeFAC[3]+","+ClientCode[3]+","+Quantities[3]+","+Hora[3];
+
+
+        String SMS_SENT = "SMS_SENT";
+        String SMS_DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(SMS_SENT), 0);
+        PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(SMS_DELIVERED), 0);
+
+
+
+// For when the SMS has been sent
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(context, "SMS sent successfully", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(context, "Generic failure cause", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(context, "Service is currently unavailable", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(context, "No pdu provided", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(context, "Radio was explicitly turned off", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SMS_SENT));
+
+// For when the SMS has been delivered
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "Enviado a tomza.co.cr", Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getBaseContext(), "Reintentando...", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SMS_DELIVERED));
+
+// Get the default instance of SmsManager
+        SmsManager smsManager = SmsManager.getDefault();
+// Send a text based SMS
+        smsManager.sendTextMessage(phoneNumber, null, smsBody, sentPendingIntent, deliveredPendingIntent);
+
+
+        /****************************************************************/
+
+    }
+    private void UploadGPS(String hour, String Latitud , String Longitud) {
+        String phoneNumber = "60159990";
+        String smsBody = "22,"+hour+","+Latitud+","+Longitud;
+
+
+        String SMS_SENT = "SMS_SENT";
+        String SMS_DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(SMS_SENT), 0);
+        PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(SMS_DELIVERED), 0);
+
+
+
+// For when the SMS has been sent
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(context, "SMS sent successfully", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(context, "Generic failure cause", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(context, "Service is currently unavailable", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(context, "No pdu provided", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(context, "Radio was explicitly turned off", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SMS_SENT));
+
+// For when the SMS has been delivered
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "Enviado a tomza.co.cr", Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getBaseContext(), "Reintentando...", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SMS_DELIVERED));
+
+// Get the default instance of SmsManager
+        SmsManager smsManager = SmsManager.getDefault();
+// Send a text based SMS
+        smsManager.sendTextMessage(phoneNumber, null, smsBody, sentPendingIntent, deliveredPendingIntent);
+
+
+        /****************************************************************/
+
+
+
+    }
+    private void UploadGPS_S(String[] hour, String[] Latitud , String[] Longitud){
+        String phoneNumber = "60159990";
+        String smsBody = "23,"+hour[0]+","+Latitud[0]+","+Longitud[0]
+                +","+hour[1]+","+Latitud[1]+","+Longitud[1]
+                +","+hour[2]+","+Latitud[2]+","+Longitud[2]
+                +","+hour[3]+","+Latitud[3]+","+Longitud[3]
+                +","+hour[4]+","+Latitud[4]+","+Longitud[4]
+                +","+hour[5]+","+Latitud[5]+","+Longitud[5]
+                +","+hour[6]+","+Latitud[6]+","+Longitud[6];
+
+
+        String SMS_SENT = "SMS_SENT";
+        String SMS_DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(SMS_SENT), 0);
+        PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(SMS_DELIVERED), 0);
+
+
+
+// For when the SMS has been sent
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(context, "SMS sent successfully", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(context, "Generic failure cause", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(context, "Service is currently unavailable", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(context, "No pdu provided", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(context, "Radio was explicitly turned off", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SMS_SENT));
+
+// For when the SMS has been delivered
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "Enviado a tomza.co.cr", Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getBaseContext(), "Reintentando...", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SMS_DELIVERED));
+
+// Get the default instance of SmsManager
+        SmsManager smsManager = SmsManager.getDefault();
+// Send a text based SMS
+        smsManager.sendTextMessage(phoneNumber, null, smsBody, sentPendingIntent, deliveredPendingIntent);
+
+
+        /****************************************************************/
+
+
+    }
+    private void CargarPreciosClientesySistemaHTTP(){
+        //Busca en el servidor cambios en el precio, rutas, clientes (altas bajas) y demas confirguraciones
+
+    }
+    private void SubirCierreDelDiaHTTP(){
+        //Sube lsitado de GPS, nuevos clientes, Fotos de los nuevos clientes, facturas y automaticamente busca por carga de precios
+
+
+        CargarPreciosClientesySistemaHTTP();
+
+    }
+
+
+    private void RecieveToken(String Token){
+        switch (Token){
+            case "F0": //Anular Factura
+                break;
+            case "F1": //Reimprimir Factura
+                break;
+            case "F2": //Autorizar otra factura a cliente (ver caso tiendas con el descuento en dos facturas)
+                break;
+
+            case "R0": //Cambiar ruta para facturar cliente
+                break;
+            case "CILZA":
+                //cambiamos la pantalla para que pueda facturar venta de cilindros
+                break;
+
+
+            default:
+                break;
+        }
+
+    }
+
+
+
+
     private void SendToServer(String CodeFAC, String Code,String Coordinates,String Date, String Quantities, String Total,String Iscredit,String Ruta){
         String phoneNumber = "60159990";
         String smsBody = "21,"+Coordinates+","+Code+","+CodeFAC+","+Date+","+Quantities+","+Total+","+Iscredit+","+Ruta;
