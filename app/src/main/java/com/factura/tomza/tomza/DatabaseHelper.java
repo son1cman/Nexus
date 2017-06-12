@@ -316,6 +316,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public boolean anularFactura(String Numerodefactura) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FACTURATOMZA_STATUS, 0);
+        db.update(TABLE_FACTURATOMZA, contentValues, FACTURATOMZA_FACNUM + "=" + Numerodefactura, null);
+        db.close();
+        return true;
+    }
     /*
     * this method will give us all the name stored in sqlite
     * */
@@ -328,6 +336,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getGeneral() {
         SQLiteDatabase db = this.getReadableDatabase();
         String sql = "SELECT * FROM " + TABLE_GENERAL + " ORDER BY " + GENERAL_ID + " ASC;";
+        Cursor c = db.rawQuery(sql, null);
+        return c;
+    }
+    public Cursor getCliente() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql = "SELECT * FROM " + TABLE_CLIENTES + " ORDER BY " + CLIENTES_ID + " ASC;";
         Cursor c = db.rawQuery(sql, null);
         return c;
     }
