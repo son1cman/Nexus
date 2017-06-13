@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
     /********************************************************************************************/
+
+    private DatabaseHelper db;
     //Bluetooth variables
     // will show the statuses like bluetooth open, close or data sent
     TextView myLabel;
@@ -177,6 +179,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        db = new DatabaseHelper(this);
 /*************************************************************************************************
  * * Facturacion Radio Buttons
  */
@@ -205,23 +209,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             break;
 
                         case 2:
-                            Q35= Integer.valueOf(mTextView.getText().toString());++;
+                            Q35= Integer.valueOf(mTextView.getText().toString());
                             m_i35.setText("35 lbs x "+mTextView.getText().toString()+"  Unids.");
                             break;
                         case 3:
-                            Q45= Integer.valueOf(mTextView.getText().toString());++;
+                            Q45= Integer.valueOf(mTextView.getText().toString());
                             m_i45.setText("45 lbs x "+mTextView.getText().toString()+"  Unids.");
                             break;
                         case 4:
-                            Q100= Integer.valueOf(mTextView.getText().toString());++;
+                            Q100= Integer.valueOf(mTextView.getText().toString());
                             m_i100.setText("100 lbs x "+mTextView.getText().toString()+"  Unids.");
                             break;
                         case 5:
-                            Qlts= Integer.valueOf(mTextView.getText().toString());++;
+                            Qlts= Integer.valueOf(mTextView.getText().toString());
                             m_lts.setText("Granel lts x "+mTextView.getText().toString());
                             break;
                         case 6:
-                            Qkgs= Integer.valueOf(mTextView.getText().toString());++;
+                            Qkgs= Integer.valueOf(mTextView.getText().toString());
                             m_kgs.setText("Granel kgs x "+mTextView.getText().toString());
                             break;
                         default:
@@ -805,6 +809,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         //if(_facok)
         SendToServer(String.valueOf(_facnum),_client,_coords,_date,_Quantities,String.format("%.2f", _totalfac),_credit,_ruta);
+        SubirCierreDelDiaHTTP();
     }
 
     // close the connection to bluetooth printer.
@@ -1101,6 +1106,32 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         //Sube lsitado de GPS, nuevos clientes, Fotos de los nuevos clientes, facturas y automaticamente busca por carga de precios
 
 
+        String url ="http://192.168.2.201/tomza/test.php";
+
+// Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        //mTextView.setText("Response is: " + response.toString());
+                        Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_SHORT).show();
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mTextView.setText("That didn't work!");
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
+
+
         CargarPreciosClientesySistemaHTTP();
 
     }
@@ -1203,13 +1234,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         String url ="http://192.168.2.201/tomza/test.php";
 
+
+
 // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // Display the first 500 characters of the response string.
-                        mTextView.setText("Response is: " + response.toString());
+                        //mTextView.setText("Response is: " + response.toString());
+                        //Toast.makeText(context, response.toString(), Toast.LENGTH_SHORT).show();
 
                     }
                 }, new Response.ErrorListener() {

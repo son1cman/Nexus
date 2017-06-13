@@ -301,7 +301,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    /*
+    /*º
     * This method taking two arguments
     * first one is the id of the name for which
     * we have to update the sync status
