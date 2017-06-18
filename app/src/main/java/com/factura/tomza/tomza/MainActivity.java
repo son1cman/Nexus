@@ -62,6 +62,8 @@ import java.util.UUID;
 import java.text.DateFormat;
 import java.util.Date;
 
+import static java.lang.Math.round;
+
 
 /**
  * The only activity in this sample. Displays UI widgets for requesting and removing location
@@ -85,6 +87,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
     /********************************************************************************************/
+
+
+    private String _SelectedOptionStr = "";
+    private int _SelectedOption = 0;
+
 
     private DatabaseHelper db;
     //Bluetooth variables
@@ -150,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     /*********************************************************
      * Facturacion
      */
-    RadioButton m_i20, m_i25, m_i35,m_i45,m_i100,m_lts,m_kgs;
+    RadioButton m_i20, m_i25, m_i35,m_i45,m_i100,m_lts,m_kgs,m_i10,m_i40,m_i60;
     Button m_add,m_substract;
     String _codigocliente = "0";
     String _client = "Libreria Hellen";
@@ -163,14 +170,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     String _credit = "c";
     String _desc = "y";
 
-    int Q20,Q25,Q35,Q45,Q100,Qlts,Qkgs;
+    int Q10,Q20,Q25,Q35,Q40,Q45,Q60,Q100,Qlts,Qkgs;
+
+    double _precioCilindro10 = 4000;
     double _precioCilindro20 = 4000;
-    double _precioCilindro25 = 5799;
+    double _precioCilindro25 = 5799;//6967
     double _precioCilindro35 = 6000;
+    double _precioCilindro40 = 2000;
     double _precioCilindro45 = 13000;
-    double _descCilindro25 = 240;
-    double _descCilindro100 = 960;
+    double _precioCilindro60 = 4000;
     double _precioCilindro100 = _precioCilindro25 * 4;
+
+
+    double _descCilindro25 = 0;
+    double _descCilindro100 = _descCilindro25 * 4;
+
+    double _descCilindro10 = round(_descCilindro25/25) * 10;
+    double _descCilindro20 = round(_descCilindro25/25) * 20;
+    double _descCilindro35 = round(_descCilindro25/25) * 35;
+    double _descCilindro40 = round(_descCilindro25/25) * 40;
+    double _descCilindro45 = round(_descCilindro25/25) * 45;
+    double _descCilindro60 = round(_descCilindro25/25) * 60;
+
+
+
+
     double _precioLts = 221.4;
     double _precioKgs = _precioLts * 11.67;
 
@@ -184,11 +208,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 /*************************************************************************************************
  * * Facturacion Radio Buttons
  */
-        Q20 = Q25 = Q35 = Q45 = Q100 = Qlts = Qkgs = 0;
+        Q10 = Q40 = Q60 = Q20 = Q25 = Q35 = Q45 = Q100 = Qlts = Qkgs = 0;
 
-        m_i20 = (RadioButton) findViewById(R.id.i20);m_i25 = (RadioButton) findViewById(R.id.i25);
-        m_i35 = (RadioButton) findViewById(R.id.i35);m_i45 = (RadioButton) findViewById(R.id.i45);
-        m_i100 = (RadioButton) findViewById(R.id.i100);
+        m_i20 = (RadioButton) findViewById(R.id.i20); m_i25 = (RadioButton) findViewById(R.id.i25);
+        m_i35 = (RadioButton) findViewById(R.id.i35); m_i45 = (RadioButton) findViewById(R.id.i45);
+        m_i100= (RadioButton) findViewById(R.id.i100); m_i60 = (RadioButton) findViewById(R.id.i60);
+        m_i10 = (RadioButton) findViewById(R.id.i10); m_i40 = (RadioButton) findViewById(R.id.i40);
         m_lts = (RadioButton) findViewById(R.id.ilts);m_kgs = (RadioButton) findViewById(R.id.ikgs);
 
         m_add = (Button) findViewById(R.id.btn_add); m_substract = (Button) findViewById(R.id.btn_substract);
@@ -196,8 +221,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+
                 if (actionId == EditorInfo.IME_ACTION_SEND) { //IME_ACTION_DONE para cerrar editor
-                    m_i25.setText("25 lbs x "+mTextView.getText().toString()+"  Unids.");
+                    //m_i25.setText("25 lbs x "+mTextView.getText().toString()+"  Unids.");
                     switch (_SelectedOption ){
                         case 0:
                             Q25 = Integer.valueOf(mTextView.getText().toString());
@@ -228,106 +255,75 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             Qkgs= Integer.valueOf(mTextView.getText().toString());
                             m_kgs.setText("Granel kgs x "+mTextView.getText().toString());
                             break;
+                        case 7:
+                            Q10 = Integer.valueOf(mTextView.getText().toString());
+                            m_i10.setText("10 lbs x "+mTextView.getText().toString() +"  Unids.");
+                            break;
+                        case 8:
+                            Q40 = Integer.valueOf(mTextView.getText().toString());
+                            m_i40.setText("40 lbs x "+mTextView.getText().toString() +"  Unids.");
+                            break;
+                        case 9:
+                            Q60 = Integer.valueOf(mTextView.getText().toString());
+                            m_i60.setText("60 lbs x "+mTextView.getText().toString() +"  Unids.");
+                            break;
                         default:
                             break;
                     }
                     //progressButton.performClick();
                     return true;
                 }
+
                 return false;
             }
         });
 
         m_add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                switch (_SelectedOption ){
-                    case 0:
-                        Q25++;
-                        m_i25.setText("25 lbs x "+Q25+"  Unids.");
-                        break;
-                    case 1:
-                        Q20++;
-                        m_i20.setText("20 lbs x "+Q20+"  Unids.");
-                        break;
-
-                    case 2:
-                        Q35++;
-                        m_i35.setText("35 lbs x "+Q35+"  Unids.");
-                        break;
-                    case 3:
-                        Q45++;
-                        m_i45.setText("45 lbs x "+Q45+"  Unids.");
-                        break;
-                    case 4:
-                        Q100++;
-                        m_i100.setText("100 lbs x "+Q100+"  Unids.");
-                        break;
-                    case 5:
-                        Qlts++;
-                        m_lts.setText("Granel lts x "+Qlts);
-                        break;
-                    case 6:
-                        Qkgs++;
-                        m_kgs.setText("Granel kgs x "+Qkgs);
-                        break;
-                    default:
-                        break;
-                }
 
             }
         });
     myUserName = (EditText)findViewById(R.id.txtUserName); //Boton menos
         m_substract.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                switch (_SelectedOption ){
-                    case 0:
-                        Q25--;
-                        if(Q25 < 0) Q25 = 0;
-                        m_i25.setText("25 lbs x "+Q25+"  Unids.");
-                        break;
-                    case 1:
-                        Q20--;
-                        if(Q20 < 0) Q20 = 0;
-                        m_i20.setText("20 lbs x "+Q20+"  Unids.");
-                        break;
-                    case 2:
-                        Q35--;
-                        if(Q35 < 0) Q35 = 0;
-                        m_i35.setText("35 lbs x "+Q35+"  Unids.");
-                        break;
-                    case 3:
-                        Q45--;
-                        if(Q45 < 0) Q45 = 0;
-                        m_i45.setText("45 lbs x "+Q45+"  Unids.");
-                        break;
-                    case 4:
-                        Q100--;
-                        if(Q100 < 0) Q100 = 0;
-                        m_i100.setText("100 lbs x "+Q100+"  Unids.");
-                        break;
-                    case 5:
-                        Qlts--;
-                        if(Qlts < 0) Qlts = 0;
-                        m_lts.setText("Granel lts x "+Qlts);
-                        break;
-                    case 6:
-                        Qkgs--;
-                        if(Qkgs < 0) Qkgs = 0;
-                        m_kgs.setText("Granel kgs x "+Qkgs);
-                        break;
-                    default:
-                        break;
-                }
+
             }
         });
-
+        m_i10.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                _SelectedOption = 7;
+                m_i20.setChecked(false);m_i25.setChecked(false);m_i35.setChecked(false);
+                m_i45.setChecked(false);m_i100.setChecked(false);m_lts.setChecked(false);
+                m_kgs.setChecked(false);m_i10.setChecked(true);m_i40.setChecked(false);
+                m_i60.setChecked(false);
+            }
+        });
+        m_i40.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                _SelectedOption = 8;
+                m_i20.setChecked(false);m_i25.setChecked(false);m_i35.setChecked(false);
+                m_i45.setChecked(false);m_i100.setChecked(false);m_lts.setChecked(false);
+                m_kgs.setChecked(false);m_i10.setChecked(false);m_i40.setChecked(true);
+                m_i60.setChecked(false);
+            }
+        });
+        m_i60.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                _SelectedOption = 9;
+                m_i20.setChecked(false);m_i25.setChecked(false);m_i35.setChecked(false);
+                m_i45.setChecked(false);m_i100.setChecked(false);m_lts.setChecked(false);
+                m_kgs.setChecked(false);m_i10.setChecked(false);m_i40.setChecked(false);
+                m_i60.setChecked(true);
+            }
+        });
 
         m_i20.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 _SelectedOption = 1;
                 m_i20.setChecked(true);m_i25.setChecked(false);m_i35.setChecked(false);
                 m_i45.setChecked(false);m_i100.setChecked(false);m_lts.setChecked(false);
-                m_kgs.setChecked(false);
+                m_kgs.setChecked(false);m_i10.setChecked(false);m_i40.setChecked(false);
+                m_i60.setChecked(false);
             }
         });
         m_i25.setOnClickListener(new View.OnClickListener() {
@@ -335,7 +331,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 _SelectedOption = 0;
                 m_i20.setChecked(false);m_i25.setChecked(true);m_i35.setChecked(false);
                 m_i45.setChecked(false);m_i100.setChecked(false);m_lts.setChecked(false);
-                m_kgs.setChecked(false);
+                m_kgs.setChecked(false);m_i10.setChecked(false);m_i40.setChecked(false);
+                m_i60.setChecked(false);
             }
         });
         m_i35.setOnClickListener(new View.OnClickListener() {
@@ -343,7 +340,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 _SelectedOption = 2;
                 m_i20.setChecked(false);m_i25.setChecked(false);m_i35.setChecked(true);
                 m_i45.setChecked(false);m_i100.setChecked(false);m_lts.setChecked(false);
-                m_kgs.setChecked(false);
+                m_kgs.setChecked(false);m_i10.setChecked(false);m_i40.setChecked(false);
+                m_i60.setChecked(false);
             }
         });
         m_i45.setOnClickListener(new View.OnClickListener() {
@@ -351,7 +349,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 _SelectedOption = 3;
                 m_i20.setChecked(false);m_i25.setChecked(false);m_i35.setChecked(false);
                 m_i45.setChecked(true);m_i100.setChecked(false);m_lts.setChecked(false);
-                m_kgs.setChecked(false);
+                m_kgs.setChecked(false);m_i10.setChecked(false);m_i40.setChecked(false);
+                m_i60.setChecked(false);
             }
         });
         m_i100.setOnClickListener(new View.OnClickListener() {
@@ -359,7 +358,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 _SelectedOption = 4;
                 m_i20.setChecked(false);m_i25.setChecked(false);m_i35.setChecked(false);
                 m_i45.setChecked(false);m_i100.setChecked(true);m_lts.setChecked(false);
-                m_kgs.setChecked(false);
+                m_kgs.setChecked(false);m_i10.setChecked(false);m_i40.setChecked(false);
+                m_i60.setChecked(false);
             }
         });
         m_lts.setOnClickListener(new View.OnClickListener() {
@@ -367,7 +367,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 _SelectedOption = 5;
                 m_i20.setChecked(false);m_i25.setChecked(false);m_i35.setChecked(false);
                 m_i45.setChecked(false);m_i100.setChecked(false);m_lts.setChecked(true);
-                m_kgs.setChecked(false);
+                m_kgs.setChecked(false);m_i10.setChecked(false);m_i40.setChecked(false);
+                m_i60.setChecked(false);
             }
         });
         m_kgs.setOnClickListener(new View.OnClickListener() {
@@ -375,7 +376,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 _SelectedOption = 6;
                 m_i20.setChecked(false);m_i25.setChecked(false);m_i35.setChecked(false);
                 m_i45.setChecked(false);m_i100.setChecked(false);m_lts.setChecked(false);
-                m_kgs.setChecked(true);
+                m_kgs.setChecked(true);m_i10.setChecked(false);m_i40.setChecked(false);
+                m_i60.setChecked(false);
             }
         });
 
@@ -579,8 +581,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    private String _SelectedOptionStr = "";
-    private int _SelectedOption = 0;
+
 
     String fac_detail,desc_detail;
     boolean _facok = true;
@@ -632,18 +633,41 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         float _fd25 = (float)(Q25 * _descCilindro25);
         float _fd100 = (float)(Q100 * _descCilindro100);
+        float _fd10 = (float)(Q10 * _descCilindro10);
+        float _fd20 = (float)(Q20 * _descCilindro20);
+        float _fd35 = (float)(Q35 * _descCilindro35);
+        float _fd40 = (float)(Q40 * _descCilindro40);
+        float _fd45 = (float)(Q45 * _descCilindro45);
+        float _fd60 = (float)(Q60 * _descCilindro60);
+
+
         float _f =  (float)(Q25 * _precioCilindro25);float _f0 = (float)(Q20 * _precioCilindro20);float _f2 = (float)(Q35 * _precioCilindro35);
         float _f3 = (float)(Q45 * _precioCilindro45);float _f4 = (float)(Q100 * _precioCilindro100);float _f5 = (float)(Qlts * _precioLts);
-        float _f6 = (float)(Qkgs * _precioKgs);
+        float _f6 = (float)(Qkgs * _precioKgs); float _f7 = (float)(Q10 * _precioCilindro10); float _f8 = (float)(Q40 * _precioCilindro40); float _f9 = (float)(Q60 * _precioCilindro60);
+
+
+
         fac_detail = "";
         desc_detail = "";
-        _Quantities = String.valueOf(Q20)+","+String.valueOf(Q25)+","+String.valueOf(Q35)+","+String.valueOf(Q45)+","+String.valueOf(Q100)+","+String.valueOf(Qlts)+","+String.valueOf(Qkgs);
-        _totalfac = _f+_f0+_f2+_f3+_f4+_f5+_f6;
+        _Quantities = String.valueOf(Q20)+","+String.valueOf(Q25)+","+String.valueOf(Q35)+","+String.valueOf(Q45)+","+String.valueOf(Q100)+","+String.valueOf(Qlts)+","+String.valueOf(Qkgs)+","+String.valueOf(Q10)+","+String.valueOf(Q40)+","+String.valueOf(Q60);
+        _totalfac = _f+_f0+_f2+_f3+_f4+_f5+_f6+_f7+_f8+_f9;
+
+        if (Q10 > 0){
+            fac_detail += "    "+String.valueOf(Q10)+ "    "+ String.valueOf(_precioCilindro20)  +"       Cilndro 10   "+ String.format("%.2f", _f7);
+            fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q10)+ "    "+ String.valueOf(_descCilindro10)  +"       10 Lbs   "+  String.format("%.2f", _fd10);
+                desc_detail += "\n";
+            }
+        }
 
         if (Q20 > 0){
             fac_detail += "    "+String.valueOf(Q20)+ "    "+ String.valueOf(_precioCilindro20)  +"       Cilndro 20   "+ String.format("%.2f", _f0);
             fac_detail += "\n";
-
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q20)+ "    "+ String.valueOf(_descCilindro20)  +"       20 Lbs   "+  String.format("%.2f", _fd20);
+                desc_detail += "\n";
+            }
         }
         if (Q25 > 0){
             fac_detail += "    "+String.valueOf(Q25)+ "    "+ String.valueOf(_precioCilindro25)  +"       Cilndro 25   "+  String.format("%.2f", _f);
@@ -656,16 +680,43 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (Q35 > 0){
             fac_detail += "    "+String.valueOf(Q35)+ "    "+ String.valueOf(_precioCilindro35)  +"       Cilndro 35   "+ String.format("%.2f", _f2);
             fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q35)+ "    "+ String.valueOf(_descCilindro35)  +"       35 Lbs   "+  String.format("%.2f", _fd35);
+                desc_detail += "\n";
+            }
+        }
+
+        if (Q40 > 0){
+            fac_detail += "    "+String.valueOf(Q40)+ "    "+ String.valueOf(_precioCilindro40)  +"       Cilndro 40   "+ String.format("%.2f", _f8);
+            fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q40)+ "    "+ String.valueOf(_descCilindro40)  +"       40 Lbs   "+  String.format("%.2f", _fd40);
+                desc_detail += "\n";
+            }
+
         }
         if (Q45 > 0){
             fac_detail += "    "+String.valueOf(Q45)+ "    "+ String.valueOf(_precioCilindro45)  +"       Cilndro 45   "+ String.format("%.2f", _f3);
             fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q45)+ "    "+ String.valueOf(_descCilindro45)  +"       20 Lbs   "+  String.format("%.2f", _fd45);
+                desc_detail += "\n";
+            }
+        }
+        if (Q60 > 0){
+            fac_detail += "    "+String.valueOf(Q60)+ "    "+ String.valueOf(_precioCilindro60)  +"       Cilndro 60   "+ String.format("%.2f", _f9);
+            fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q60)+ "    "+ String.valueOf(_descCilindro60)  +"       60 Lbs   "+  String.format("%.2f", _fd60);
+                desc_detail += "\n";
+            }
+
         }
         if (Q100 > 0){
             fac_detail += "    "+String.valueOf(Q100)+ "    "+ String.valueOf(_precioCilindro100)  +"       Cilndro 100   "+ String.format("%.2f", _f4);
             fac_detail += "\n";
             if (_desc == "y"){
-                desc_detail += "    "+String.valueOf(Q100)+ "    "+ String.valueOf(_descCilindro100)  +"      100 Lbs   "+  String.format("%.2f", _fd25);
+                desc_detail += "    "+String.valueOf(Q100)+ "    "+ String.valueOf(_descCilindro100)  +"      100 Lbs   "+  String.format("%.2f", _fd100);
                 desc_detail += "\n";
             }
         }
@@ -774,9 +825,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 msg += "   -------------------------------------------- ";
                 msg += desc_detail;
                 msg += "\n";
-                msg += "    DESCUENTO(CRC):           "+String.format("%.2f", _fd25+_fd100)+"   ";
+                msg += "    DESCUENTO(CRC):           "+String.format("%.2f", _fd25+_fd100+_fd10+_fd20+_fd35+_fd40+_fd45+_fd60)+"   ";
                 msg += "\n";
-                msg += "    TOTAL A PAGAR(CRC):       "+String.format("%.2f",_totalfac - (_fd25+_fd100))+"   ";
+                msg += "    TOTAL A PAGAR(CRC):       "+String.format("%.2f",_totalfac - _fd25+_fd100+_fd10+_fd20+_fd35+_fd40+_fd45+_fd60)+"   ";
                 msg += "\n";
                 msg += "\n";
                 msg += "\n";
@@ -809,7 +860,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         //if(_facok)
         SendToServer(String.valueOf(_facnum),_client,_coords,_date,_Quantities,String.format("%.2f", _totalfac),_credit,_ruta);
-        SubirCierreDelDiaHTTP();
+        //ta dando error :(
+        //db.addFactura(Integer.getInteger(_client),String.valueOf(_facnum),_date,Q20,Q25,Q35,Q45,Q100,Qlts,Qkgs);
+        //SubirCierreDelDiaHTTP();
     }
 
     // close the connection to bluetooth printer.
