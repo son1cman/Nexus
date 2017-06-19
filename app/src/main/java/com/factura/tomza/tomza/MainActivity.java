@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.RadioButton;
+import android.content.DialogInterface;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -89,6 +90,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     /********************************************************************************************/
 
 
+
+
+    private boolean _do = false;
     private String _SelectedOptionStr = "";
     private int _SelectedOption = 0;
 
@@ -404,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
 
-        try {
+
             sendButton = (Button) findViewById(R.id.send);
             //Button openButton = (Button) findViewById(R.id.btnsync);
 
@@ -413,10 +417,42 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             sendButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
 
-                    try {
-                        sendData();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int choice) {
+                            switch (choice) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    _do=true;
+                                    try {
+                                        try {
+                                            sendData();
+
+                                        } catch (IOException ex) {
+                                            ex.printStackTrace();
+                                        }
+                                    } catch(Exception e) {
+
+
+                                        e.printStackTrace();
+                                    }
+
+                                    //saveNameToServer("0,"+editTextName.getText().toString()+","+LAT+","+LONG+","+_supervisor);
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    _do=false;
+                                    break;
+                            }
+                        }
+                    };
+                    calcularFactura();
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage("Desglose de factura: " + "\n" + fac_detail + "\n Desglose Descuento" + desc_detail )
+                            .setPositiveButton("Imprimir", dialogClickListener)
+                            .setNegativeButton("Cancelar", dialogClickListener).show();
+                    if(_do){
+
+
                     }
                 }
             });
@@ -436,11 +472,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
 
-        } catch(Exception e) {
 
-
-            e.printStackTrace();
-        }
 
 
 
@@ -585,7 +617,148 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     String fac_detail,desc_detail;
     boolean _facok = true;
+
+    void calcularFactura(){
+        int codigocliente = Integer.parseInt(myUserName.getText().toString());
+        _codigocliente = myUserName.getText().toString();
+        _client = _razonDB[codigocliente];
+        if(_descuentoDB[codigocliente] != 0){
+            _desc = "y";
+            if(_descuentoDB[codigocliente] == -1) {
+                if((Q25 + (Q100 * 4)) < 10)
+                    _descCilindro25 = 1975;
+                if((Q25 + (Q100 * 4)) > 9 && (Q25 + (Q100 * 4)) < 21)
+                    _descCilindro25 = 1754;
+                if((Q25 + (Q100 * 4)) > 19 && (Q25 + (Q100 * 4)) < 31)
+                    _descCilindro25 = 1858;
+                if((Q25 + (Q100 * 4)) >= 30 && (Q25 + (Q100 * 4)) < 41)
+                    _descCilindro25 = 1898;
+                if((Q25 + (Q100 * 4)) >= 40 && (Q25 + (Q100 * 4)) < 51)
+                    _descCilindro25 = 1908;
+                if((Q25 + (Q100 * 4)) >= 50 && (Q25 + (Q100 * 4)) < 61)
+                    _descCilindro25 = 1923;
+                if((Q25 + (Q100 * 4)) >= 60)
+                    _descCilindro25 = 1933;
+
+            }else {
+
+                _descCilindro25 = Integer.parseInt(_descuentoDB[codigocliente].toString());
+                _descCilindro100 = _descCilindro100 * 4;
+            }
+        }else{
+            _desc = "n";
+        }
+        if(_creditDB[codigocliente] != 0){
+            _credit = "y";
+        }else{
+            _credit = "n";
+        }
+
+
+
+        float _fd25 = (float)(Q25 * _descCilindro25);
+        float _fd100 = (float)(Q100 * _descCilindro100);
+        float _fd10 = (float)(Q10 * _descCilindro10);
+        float _fd20 = (float)(Q20 * _descCilindro20);
+        float _fd35 = (float)(Q35 * _descCilindro35);
+        float _fd40 = (float)(Q40 * _descCilindro40);
+        float _fd45 = (float)(Q45 * _descCilindro45);
+        float _fd60 = (float)(Q60 * _descCilindro60);
+
+
+        float _f =  (float)(Q25 * _precioCilindro25);float _f0 = (float)(Q20 * _precioCilindro20);float _f2 = (float)(Q35 * _precioCilindro35);
+        float _f3 = (float)(Q45 * _precioCilindro45);float _f4 = (float)(Q100 * _precioCilindro100);float _f5 = (float)(Qlts * _precioLts);
+        float _f6 = (float)(Qkgs * _precioKgs); float _f7 = (float)(Q10 * _precioCilindro10); float _f8 = (float)(Q40 * _precioCilindro40); float _f9 = (float)(Q60 * _precioCilindro60);
+
+
+
+        fac_detail = "";
+        desc_detail = "";
+        _Quantities = String.valueOf(Q20)+","+String.valueOf(Q25)+","+String.valueOf(Q35)+","+String.valueOf(Q45)+","+String.valueOf(Q100)+","+String.valueOf(Qlts)+","+String.valueOf(Qkgs)+","+String.valueOf(Q10)+","+String.valueOf(Q40)+","+String.valueOf(Q60);
+        _totalfac = _f+_f0+_f2+_f3+_f4+_f5+_f6+_f7+_f8+_f9;
+
+        if (Q10 > 0){
+            fac_detail += "    "+String.valueOf(Q10)+ "    "+ String.valueOf(_precioCilindro20)  +"       Cilndro 10   "+ String.format("%.2f", _f7);
+            fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q10)+ "    "+ String.valueOf(_descCilindro10)  +"       10 Lbs   "+  String.format("%.2f", _fd10);
+                desc_detail += "\n";
+            }
+        }
+
+        if (Q20 > 0){
+            fac_detail += "    "+String.valueOf(Q20)+ "    "+ String.valueOf(_precioCilindro20)  +"       Cilndro 20   "+ String.format("%.2f", _f0);
+            fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q20)+ "    "+ String.valueOf(_descCilindro20)  +"       20 Lbs   "+  String.format("%.2f", _fd20);
+                desc_detail += "\n";
+            }
+        }
+        if (Q25 > 0){
+            fac_detail += "    "+String.valueOf(Q25)+ "    "+ String.valueOf(_precioCilindro25)  +"       Cilndro 25   "+  String.format("%.2f", _f);
+            fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q25)+ "    "+ String.valueOf(_descCilindro25)  +"       25 Lbs   "+  String.format("%.2f", _fd25);
+                desc_detail += "\n";
+            }
+        }
+        if (Q35 > 0){
+            fac_detail += "    "+String.valueOf(Q35)+ "    "+ String.valueOf(_precioCilindro35)  +"       Cilndro 35   "+ String.format("%.2f", _f2);
+            fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q35)+ "    "+ String.valueOf(_descCilindro35)  +"       35 Lbs   "+  String.format("%.2f", _fd35);
+                desc_detail += "\n";
+            }
+        }
+
+        if (Q40 > 0){
+            fac_detail += "    "+String.valueOf(Q40)+ "    "+ String.valueOf(_precioCilindro40)  +"       Cilndro 40   "+ String.format("%.2f", _f8);
+            fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q40)+ "    "+ String.valueOf(_descCilindro40)  +"       40 Lbs   "+  String.format("%.2f", _fd40);
+                desc_detail += "\n";
+            }
+
+        }
+        if (Q45 > 0){
+            fac_detail += "    "+String.valueOf(Q45)+ "    "+ String.valueOf(_precioCilindro45)  +"       Cilndro 45   "+ String.format("%.2f", _f3);
+            fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q45)+ "    "+ String.valueOf(_descCilindro45)  +"       20 Lbs   "+  String.format("%.2f", _fd45);
+                desc_detail += "\n";
+            }
+        }
+        if (Q60 > 0){
+            fac_detail += "    "+String.valueOf(Q60)+ "    "+ String.valueOf(_precioCilindro60)  +"       Cilndro 60   "+ String.format("%.2f", _f9);
+            fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q60)+ "    "+ String.valueOf(_descCilindro60)  +"       60 Lbs   "+  String.format("%.2f", _fd60);
+                desc_detail += "\n";
+            }
+
+        }
+        if (Q100 > 0){
+            fac_detail += "    "+String.valueOf(Q100)+ "    "+ String.valueOf(_precioCilindro100)  +"       Cilndro 100   "+ String.format("%.2f", _f4);
+            fac_detail += "\n";
+            if (_desc == "y"){
+                desc_detail += "    "+String.valueOf(Q100)+ "    "+ String.valueOf(_descCilindro100)  +"      100 Lbs   "+  String.format("%.2f", _fd100);
+                desc_detail += "\n";
+            }
+        }
+        if (Qlts > 0){
+            fac_detail += "    "+String.valueOf(Qlts)+ "  "+ String.format("%.2f", _precioLts)  +"     Granel Lts   "+ String.format("%.2f", _f5
+            );
+            fac_detail += "\n";
+        }
+        if (Qkgs > 0){
+            fac_detail += "    "+String.valueOf(Qkgs)+ "  "+ String.format("%.2f", _precioKgs)  +"     Granel Kgs   "+ String.format("%.2f", _f6);
+            fac_detail += "\n";
+        }
+
+    }
     // this will send text data to be printed by the bluetooth printer
+
+
     void sendData() throws IOException {
         //No eliminar tal vez sirva para los litros
         /*
@@ -912,7 +1085,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onReceive(Context context, Intent intent) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
-                        Toast.makeText(context, "SMS sent successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Factura enviada con exito", Toast.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
                         Toast.makeText(context, "Generic failure cause", Toast.LENGTH_SHORT).show();
@@ -978,7 +1151,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onReceive(Context context, Intent intent) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
-                        Toast.makeText(context, "SMS sent successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Factura enviada con exito", Toast.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
                         Toast.makeText(context, "Generic failure cause", Toast.LENGTH_SHORT).show();
@@ -1039,7 +1212,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onReceive(Context context, Intent intent) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
-                        Toast.makeText(context, "SMS sent successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Factura Procesada", Toast.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
                         Toast.makeText(context, "Generic failure cause", Toast.LENGTH_SHORT).show();
@@ -1108,7 +1281,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onReceive(Context context, Intent intent) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
-                        Toast.makeText(context, "SMS sent successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Factura Procesada", Toast.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
                         Toast.makeText(context, "Generic failure cause", Toast.LENGTH_SHORT).show();
@@ -1234,7 +1407,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onReceive(Context context, Intent intent) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
-                        Toast.makeText(context, "SMS sent successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Factura Procesada", Toast.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
                         Toast.makeText(context, "Generic failure cause", Toast.LENGTH_SHORT).show();
